@@ -1,1 +1,143 @@
-boards/shields/ergonaut_one/ergonaut_one.keymap
+/*
+ * Copyright (c) 2021 Rafael Yumagulov
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/keys.h>
+
+#define DEF 0
+#define LWR 1
+#define RSE 2
+#define ADJ 3
+
+&lt { quick_tap_ms = <200>; };
+
+&mt { quick_tap_ms = <200>; };
+
+/ {
+    chosen {
+        zmk,matrix_transform = &default_transform;
+
+        // zmk,matrix_transform = &extra_keys_transform;
+    };
+};
+
+/ {
+    macros {
+        email1: email1 {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp L &kp E &kp C &kp H &kp U &kp C &kp K &kp T &kp H &kp E &kp P &kp I &kp R &kp A &kp T &kp E &kp AT &kp G &kp M &kp A &kp I &kp L &kp DOT &kp C &kp O &kp M>;
+            label = "EMAIL1";
+        };
+
+        email2: email2 {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp J &kp O &kp A &kp N &kp DOT &kp V &kp I &kp L &kp A &kp R &kp I &kp N &kp O &kp AT &kp G &kp M &kp A &kp I &kp L &kp DOT &kp C &kp O &kp M>;
+            label = "EMAIL2";
+        };
+
+        lambda_sign: lambda_sign {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp EQUAL &kp GT>;
+            label = "LAMBDA_SIGN";
+        };
+
+        enye: enye {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp TILDE &kp N>;
+            label = "ENYE";
+        };
+    };
+
+    behaviors {
+        enye_tapdance: enye_tapdance {
+            compatible = "zmk,behavior-tap-dance";
+            label = "ENYE_TAPDANCE";
+            #binding-cells = <0>;
+            bindings = <&kp SEMICOLON>, <&enye>;
+        };
+
+        capslock_tapdance: capslock_tapdance {
+            compatible = "zmk,behavior-tap-dance";
+            label = "CAPSLOCK_TAPDANCE";
+            #binding-cells = <0>;
+            bindings = <&kp LCTRL>, <&kp CAPSLOCK>;
+        };
+    };
+
+    combos {
+        compatible = "zmk,combos";
+
+        toggle_game {
+            bindings = <&tog 4>;
+            key-positions = <0 11 37 40>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+&kp TAB             &kp Q  &kp W  &kp E         &kp R  &kp T      &kp Y      &kp U  &kp I         &kp O    &kp P           &kp BACKSPACE
+&capslock_tapdance  &kp A  &kp S  &kp D         &kp F  &kp G      &kp H      &kp J  &kp K         &kp L    &enye_tapdance  &kp SINGLE_QUOTE
+&kp LSHIFT          &kp Z  &kp X  &kp C         &kp V  &kp B      &kp N      &kp M  &kp COMMA     &kp DOT  &kp FSLH        &mt LSHIFT KP_ENTER
+                                  &kp LEFT_ALT  &mo 1  &kp SPACE  &kp SPACE  &mo 2  &kp LEFT_WIN
+            >;
+        };
+
+        lower_layer {
+            bindings = <
+&kp ESCAPE  &kp F1           &kp F2     &kp F3         &kp F4   &kp F5   &kp KP_NUMBER_7  &kp KP_NUMBER_8  &kp KP_NUMBER_9  &kp DOT   &kp COMMA       &kp DELETE
+&trans      &kp F6           &kp F7     &kp F8         &kp F9   &kp F10  &kp KP_NUMBER_4  &kp KP_NUMBER_5  &kp KP_NUMBER_6  &kp HOME  &kp UP_ARROW    &kp END
+&trans      &kp PRINTSCREEN  &kp PG_UP  &kp PAGE_DOWN  &kp F11  &kp F12  &kp KP_NUMBER_1  &kp KP_NUMBER_2  &kp KP_NUMBER_3  &kp LEFT  &kp DOWN_ARROW  &kp RIGHT
+                                        &trans         &trans   &trans   &kp KP_NUMBER_0  &trans           &trans
+            >;
+        };
+
+        raise_layer {
+            bindings = <
+&trans  &kp EXCL    &kp AT   &kp HASH  &kp DOLLAR    &kp PERCENT  &kp CARET       &kp AMPERSAND  &kp ASTERISK      &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &trans
+&trans  &kp RA(N5)  &email1  &email2   &lambda_sign  &none        &kp MINUS       &kp EQUAL      &kp LEFT_BRACKET  &kp RIGHT_BRACKET     &kp BACKSLASH          &mt RCTRL GRAVE
+&trans  &none       &none    &none     &none         &none        &kp UNDERSCORE  &kp PLUS       &kp LEFT_BRACE    &kp RIGHT_BRACE       &kp PIPE               &kp TILDE
+                             &trans    &trans        &trans       &trans          &trans         &trans
+            >;
+        };
+
+        adjust_layer {
+            bindings = <
+&bootloader  &none         &none         &none         &none         &none           &none             &none       &none              &none           &none       &bootloader
+&bt BT_CLR   &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4    &none             &none       &kp C_VOLUME_UP    &none           &none       &none
+&sys_reset   &none         &none         &none         &none         &kp KP_NUMLOCK  &kp K_PLAY_PAUSE  &kp K_STOP  &kp C_VOLUME_DOWN  &kp K_PREVIOUS  &kp K_NEXT  &sys_reset
+                                         &trans        &none         &trans          &trans            &none       &trans
+            >;
+        };
+
+        game_layer {
+            bindings = <
+&trans      &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
+&kp LCTRL   &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
+&kp LSHIFT  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &kp ENTER
+                            &trans  &trans  &trans  &trans  &trans  &trans
+            >;
+
+            label = "GAME_LAYER";
+        };
+    };
+
+    conditional_layers {
+        compatible = "zmk,conditional-layers";
+
+        tri-layer {
+            if-layers = <1 2>;
+            then-layer = <3>;
+        };
+    };
+};
